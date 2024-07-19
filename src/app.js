@@ -44,7 +44,7 @@ app.post('/lobbies', async (req, res) => {
         const database = client.db(db);
         const collection = database.collection('lobbies');
         const isDuplicated = await collection.findOne({ name });
-        if (isDuplicated) return res.status(400).json({ message: `A lobby with name: '${name}' already exists, please chose pick another!` });
+        if (isDuplicated) return res.status(400).json({ message: `A lobby with name: '${name}' already exists, please pick another!` });
         const address = req.ip;
         const status = 'open';
         const lobby = { name, address, port, status };
@@ -91,7 +91,7 @@ app.patch('/lobbies/:name', async (req, res) => {
         const collection = database.collection('lobbies');
         const required = ["op", "path", "value"];
         if (required.every((key) => key in req.body)) {
-            if (req.body.op === 'op' && req.body.path === '/status' && (req.body.value === 'open' || req.body.value === 'started')) {
+            if (req.body.op === 'replace' && req.body.path === '/status' && (req.body.value === 'open' || req.body.value === 'started')) {
                 const { matchedCount, modifiedCount } = await collection.updateOne({ name: req.params.name }, { $set: { status: req.body.value } });
                 if (!matchedCount) return res.sendStatus(404);
                 if (!modifiedCount) return res.sendStatus(204);
@@ -99,7 +99,7 @@ app.patch('/lobbies/:name', async (req, res) => {
             }
         }
         return res.status(400).json({
-            message: 'Request body must be a variation of template: { "op": "replace", "path": "/status",  "value": "started|open" }!'
+            message: 'Request body must be a variation of this template: { "op": "replace", "path": "/status",  "value": "started|open" }!'
         });
     } finally {
         if (client) await client.close();
