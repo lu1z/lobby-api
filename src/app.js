@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { MongoClient, ObjectId } from "mongodb";
+import query from "./mongo"
 
 const app = express();
 
@@ -10,25 +11,36 @@ app.set('trust proxy', true);
 const connectionString = process.env.DATABASE_URL;
 const [, db] = connectionString.match(/mongodb.net\/(.*)$/);
 
+const LOBBIES_COLLECTION = 'lobbies';
+const LOBBIES_END_POINT = '/lobbies';
+
 app.get('/ip', (req, res) => {
     return res.status(200).json(req.ip);
 });
 
-app.get('/lobbies', async (req, res) => {
-    let client = null;
-    try {
-        client = new MongoClient(connectionString);
-        const database = client.db(db);
-        const collection = database.collection('lobbies');
-        let filter = {}
-        // if ('player' in req.body) filter = { player: req.body.player };
-        // if ('_id' in req.body) filter = { _id: new ObjectId(req.body._id) };
-        const result = await collection.find(filter).toArray();
-        return res.status(200).json(result)
-    } finally {
-        if (client) await client.close();
-    }
-});
+// app.get('/lobbies', async (req, res) => {
+//     let client = null;
+//     try {
+//         client = new MongoClient(connectionString);
+//         const database = client.db(db);
+//         const collection = database.collection('lobbies');
+//         let filter = {}
+//         // if ('player' in req.body) filter = { player: req.body.player };
+//         // if ('_id' in req.body) filter = { _id: new ObjectId(req.body._id) };
+//         const result = await collection.find(filter).toArray();
+//         return res.status(200).json(result)
+//     } finally {
+//         if (client) await client.close();
+//     }
+// });
+
+app.get(LOBBIES_END_POINT, query(LOBBIES_COLLECTION, async (_, res, collection) => {
+    let filter = {}
+    // if ('player' in req.body) filter = { player: req.body.player };
+    // if ('_id' in req.body) filter = { _id: new ObjectId(req.body._id) };
+    const result = await collection.find(filter).toArray();
+    return res.status(200).json(result)
+}));
 
 app.post('/lobbies', async (req, res) => {
     if (!('name' in req.body)) return res.status(400).json({ message: "Missing field 'name'!" });
