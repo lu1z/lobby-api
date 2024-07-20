@@ -1,27 +1,29 @@
 import request from 'supertest';
-import app from '../../src/app';
+import { jest } from '@jest/globals';
+
+
+const collection = jest.fn();
+jest.unstable_mockModule('../../src/helpers/mongoConnectionWraper.js', () => ({
+    default: jest.fn((c, w) => async (rq, rs) => await w(rq, rs, collection())),
+}));
+
+
+const app = (await import('../../src/app.js')).default;
 
 
 describe('Test /lobbies end points.', () => {
     it("Should response the GET method", () => {
-        return request(app)
-            .get("/lobbies")
-            .expect(200);
+        collection.mockReturnValueOnce({
+            find: () => ({ toArray: () => [{}, {}] })
+        })
+        return request(app).get("/lobbies")
+            .expect(200, [{}, {}]);
+    });
+    it("Should response the GET method", () => {
+        collection.mockReturnValueOnce({
+            find: () => ({ toArray: () => [{}] })
+        })
+        return request(app).get("/lobbies")
+            .expect(200, [{}]);
     });
 });
-
-// import { describe, expect, it, jest } from '@jest/globals';
-
-// jest.unstable_mockModule('../dependency', () => ({
-//   doSomething: jest.fn()
-// }));
-
-// const myModule = await import('../myModule');
-// const dependency = await import('../dependency');
-
-// describe('myModule', async () => {
-//   it('calls the dependency with double the input', () => {
-//     myModule(2);
-//     expect(dependency.doSomething).toBeCalledWith(4);
-//   });
-// });

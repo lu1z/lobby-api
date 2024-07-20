@@ -4,7 +4,7 @@ import {
     DATA_BASE_NAME,
 } from './constants.js'
 
-export default function mongoConnectionWraper(collectionName, routeWork) {
+export default function (collectionName, routeWork) {
     return async (req, res) => {
         let client = null;
         try {
