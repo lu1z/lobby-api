@@ -1,6 +1,6 @@
 export const LOBBIES_COLLECTION = 'lobbies';
 export const LOBBIES_END_POINT = '/lobbies';
-export const CONNECTION_STRING = process.env.DATABASE_URL;
+export const CONNECTION_STRING = process.env.DATABASE_URL || 'mongodb.net/testEnviroment';
 export const [, DATA_BASE_NAME] = CONNECTION_STRING.match(/mongodb.net\/(.*)$/);
 export const missingField = (field) => `Missing field '${field}'!`;
 export const FIELD_LOBBY_IDENTIFIER = 'name';
