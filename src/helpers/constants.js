@@ -1,0 +1,18 @@
+export const LOBBIES_COLLECTION = 'lobbies';
+export const LOBBIES_END_POINT = '/lobbies';
+export const CONNECTION_STRING = process.env.DATABASE_URL;
+export const [, DATA_BASE_NAME] = CONNECTION_STRING.match(/mongodb.net\/(.*)$/);
+export const missingField = (field) => `Missing field '${field}'!`;
+export const FIELD_LOBBY_IDENTIFIER = 'name';
+export const FIELD_LOBBY_SOCKET_PORT = 'port';
+export const integerField = (field) => `Field '${field}' must be an integer!`;
+export const outOfBoundsField = (min, field, max) => `Field '${field}' must be inside (${min} .. ${max}) integer interval!`;
+export const emptyField = (field) => `Field '${field}' must not be empty!`;
+export const recordDuplicated = (value) => `A record with identifier: '${value}' already exists, please pick another!`;
+export const LOBBY_STATUS_READY = 'open';
+export const LOBBY_STATUS_ONGOING = 'started';
+export const FIELD_LOBBY_CLIENT_ADDRESS = 'address';
+export const FIELD_LOBBY_STATE = 'status';
+export const incorrectValueField = (field, value) => `Field '${field}' must be this value: '${value}'!`;
+export const incorrectEnumField = (field, values) => `Field '${field}' must be one of this values: [${values.join()}]!`;
+export const NO_CHANGE = 'Nothing has changed!';
